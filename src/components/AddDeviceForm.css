@@ -1,0 +1,15 @@
+.AddDeviceForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.AddDeviceForm form {
+    background: transparent;
+    width:80%;
+    padding: 20px;
+    border-radius: 7px;
+    font-weight:500;
+}

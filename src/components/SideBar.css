@@ -1,0 +1,13 @@
+.navbar{
+    background-color: transparent !important;
+  }
+
+.nav-item {
+    width: 130px;
+    text-align: center;
+  }
+
+  nav a:not(.navbar-brand):hover {
+    font-weight: bold;
+  }
+  

@@ -3,6 +3,7 @@ import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 import UserContext from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import "./SignupForm.css"
+
 const SignupForm = () => {
   const { signup } = useContext(UserContext);
   const [formData, setFormData] = useState({
@@ -10,7 +11,8 @@ const SignupForm = () => {
     password: "",
     firstName: "",
     lastName: "",
-    email: ""
+    email: "",
+    lifxToken: ""  
   });
   
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const SignupForm = () => {
     if (success) {
       navigate("/"); // Redirect after successful signup
     } else {
-      setError("Signup failed...Make sure ");
+      setError("Signup failed... Please check your inputs and try again.");
     }
   };
 
@@ -105,6 +107,19 @@ const SignupForm = () => {
             name="email"
             id="email"
             value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="lifxToken">LIFX Token</Label>
+          <Input
+            type="text"
+            bsSize="lg"
+            name="lifxToken"
+            id="lifxToken"
+            value={formData.lifxToken}
             onChange={handleChange}
             required
           />

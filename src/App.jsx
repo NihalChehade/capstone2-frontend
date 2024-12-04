@@ -95,12 +95,26 @@ function App() {
       return false;
     }
   }
+  // Function to update user information
+  async function updateUser(userData) {
+    try {
+      const updatedUser = await HomeAutomationApi.updateProfile(
+        currentUser.username,
+        userData
+      );
+      setCurrentUser(updatedUser); // Update current user state with the response
+      return true; // Return true on successful update
+    } catch (err) {
+      console.error("User update failed", err);
+      return false; // Return false if there's an error
+    }
+  }
 
   // Logout function
   function logout() {
     setToken(null);
     setCurrentUser(null);
-    setDevices(null);
+    setDevices([]);
     HomeAutomationApi.token = null;
     localStorage.removeItem("token");
   }
@@ -121,6 +135,46 @@ function App() {
     }
   }
 
+
+    // remove a device function
+async function removeDevice(deviceName) {
+  try {
+    const res = await HomeAutomationApi.removeADevice(deviceName);
+    if (res.deleted) {
+      setDevices(devices => devices.filter(device => device.name !== deviceName));
+      console.log("Device removed successfully", deviceName);
+      return true;
+    }
+  } catch (err) {
+    console.error("Device removal failed", err);
+    return false;
+  }
+}
+
+const controlLight = async (deviceName, action) => {
+  try {
+    const message = await HomeAutomationApi.controlALight(deviceName, action);
+    console.log("Control Light Response:", message);
+    return message;
+  } catch (err) {
+    console.error("Error controlling light:", err);
+    throw err;
+  }
+};
+
+const controlLights = async (action) => {
+  try {
+    const message = await HomeAutomationApi.controlLights(action);
+    console.log("Control Lights Response:", message);
+    return message;
+  } catch (err) {
+    console.error("Error controlling multiple lights:", err);
+    throw err;
+  }
+};
+
+
+
   return (
     <UserContext.Provider
       value={{
@@ -132,6 +186,10 @@ function App() {
         login,
         signup,
         logout,
+        updateUser,
+        removeDevice,
+        controlLight,
+        controlLights
       }}
     >
       <SideBar />

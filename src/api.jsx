@@ -28,11 +28,18 @@ class HomeAutomationApi {
 
   // Individual API routes
 
-  /** signup a new user : { username, password, firstName, lastName, email } => token  */
-  static async signup({ username, password, firstName, lastName, email }) {
+  /** signup a new user : { username, password, firstName, lastName, email, lifxToken } => token  */
+  static async signup({
+    username,
+    password,
+    firstName,
+    lastName,
+    email,
+    lifxToken,
+  }) {
     let res = await this.request(
       "auth/register",
-      { username, password, firstName, lastName, email },
+      { username, password, firstName, lastName, email, lifxToken },
       "post"
     );
     return res.token;
@@ -42,6 +49,18 @@ class HomeAutomationApi {
     let res = await this.request(`auth/token`, { username, password }, "post");
     return res.token;
   }
+
+  // /** Logout a user */
+  // static async logout() {
+  //   try {
+  //     // Call the logout endpoint
+  //     const response = await this.request(`auth/logout`, {}, "post");
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error("Logout Failed:", err);
+  //     throw err;
+  //   }
+  // }
 
   /** Get a user by username : username => user  */
   static async getUser(username) {
@@ -59,11 +78,10 @@ class HomeAutomationApi {
   static async getDevices() {
     let res = await this.request(`devices`);
     if (res) {
-      console.log("devices from api", res.devices);
       return res.devices;
     }
   }
-  
+
   static async addADevice({ name, serial_number, type, room, status }) {
     let res = await this.request(
       `devices/`,
@@ -72,6 +90,13 @@ class HomeAutomationApi {
     );
     return res.device;
   }
+
+  static async removeADevice(deviceName) {
+    console.log("deviceName to delete",deviceName);
+    let res = await this.request(`devices/${deviceName}`, {}, "delete");
+    return res;
+  }
+
   static async controlALight(deviceName, action) {
     let res = await this.request(
       `devices/lights/${deviceName}`,

@@ -92,7 +92,6 @@ class HomeAutomationApi {
   }
 
   static async removeADevice(deviceName) {
-    console.log("deviceName to delete",deviceName);
     let res = await this.request(`devices/${deviceName}`, {}, "delete");
     return res;
   }

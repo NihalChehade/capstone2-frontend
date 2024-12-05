@@ -83,7 +83,6 @@ function App() {
       // Get token from backend after signup
       const token = await HomeAutomationApi.signup(userData);
       if (token) {
-        console.log("token", token);
         setToken(token);
         HomeAutomationApi.token = token;
         // store the token in localStorage
@@ -126,7 +125,6 @@ function App() {
       const newDevice = await HomeAutomationApi.addADevice(deviceData);
       if (newDevice) {
         setDevices((devices) => [...devices, newDevice]);
-        console.log("devices after adding newDevice", devices);
         return true;
       }
     } catch (err) {
@@ -142,7 +140,6 @@ async function removeDevice(deviceName) {
     const res = await HomeAutomationApi.removeADevice(deviceName);
     if (res.deleted) {
       setDevices(devices => devices.filter(device => device.name !== deviceName));
-      console.log("Device removed successfully", deviceName);
       return true;
     }
   } catch (err) {
@@ -154,7 +151,6 @@ async function removeDevice(deviceName) {
 const controlLight = async (deviceName, action) => {
   try {
     const message = await HomeAutomationApi.controlALight(deviceName, action);
-    console.log("Control Light Response:", message);
     return message;
   } catch (err) {
     console.error("Error controlling light:", err);
@@ -165,7 +161,6 @@ const controlLight = async (deviceName, action) => {
 const controlLights = async (action) => {
   try {
     const message = await HomeAutomationApi.controlLights(action);
-    console.log("Control Lights Response:", message);
     return message;
   } catch (err) {
     console.error("Error controlling multiple lights:", err);

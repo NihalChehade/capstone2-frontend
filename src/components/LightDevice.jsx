@@ -33,7 +33,6 @@ const LightDevice = ({ device }) => {
           value = parseFloat(value);
         }
         await controlLight(deviceName, { [name]: value });
-        console.log(`${device.name} updated successfully`);
       } catch (error) {
         console.error(`Failed to update ${device.name}:`, error);
       }
@@ -45,7 +44,6 @@ const LightDevice = ({ device }) => {
   const handleDelete = async () => {
     try {
       await removeDevice(device.name);
-      console.log("Device removed successfully");
     } catch (error) {
       console.error("Failed to delete device:", error);
     }

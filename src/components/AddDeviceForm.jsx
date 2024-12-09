@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button, Alert, Spinner } from "reactstrap";
 import UserContext from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import "./AddDeviceForm.css"
 
 const AddDeviceForm = () => {
-  const { addDevice } = useContext(UserContext);
+  const { addDevice, errorMessages } = useContext(UserContext);
   const [formData, setFormData] = useState({
     name: "",
     serial_number: "",
@@ -16,7 +16,8 @@ const AddDeviceForm = () => {
   
   const navigate = useNavigate();
 
-  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -30,20 +31,32 @@ const AddDeviceForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start spinner
     const success = await addDevice(formData);
+    setLoading(false); // Stop spinner
     if (success) {
       navigate("/"); // Redirect after successful device addition
     } else {
-      setError("Device adding failed...try again later! ");
+      // Using the error message from App's state
+      setFormError(
+        errorMessages.addDevice ||
+          "Device adding failed... Please check your inputs and try again!"
+      );
     }
   };
 
   return (
     <div className="AddDeviceForm">
       <h2>Add Device Form</h2>
-      
+
+      {loading && (
+        <div className="text-center">
+          <Spinner color="primary" />
+        </div>
+      )} {/* Display spinner when loading is true */}
+
       {/* Display error message if there's an error */}
-      {error && <Alert color="danger">{error}</Alert>}
+      {formError && <Alert color="danger">{formError}</Alert>}
 
       <Form onSubmit={handleSubmit}>
         <FormGroup>
@@ -111,7 +124,7 @@ const AddDeviceForm = () => {
           />
         </FormGroup>
 
-        <Button type="submit" size="lg" color="primary" block>
+        <Button type="submit" size="lg" color="primary" block disabled={loading}>
           ADD
         </Button>
       </Form>

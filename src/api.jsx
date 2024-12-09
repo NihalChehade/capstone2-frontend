@@ -6,6 +6,26 @@ class HomeAutomationApi {
   // the token for interactive with the API will be stored here.
   static token;
 
+  // static async request(endpoint, data = {}, method = "get") {
+  //   const url = `${BASE_URL}/${endpoint}`;
+  //   const headers = { Authorization: `Bearer ${HomeAutomationApi.token}` };
+  //   const params = method === "get" ? data : {};
+
+  //   try {
+  //     const response = await axios({ url, method, data, params, headers });
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error("API Error:", err.response);
+  //     if (!err.response) {
+  //       throw ["Network error or server is unreachable"];
+  //     }
+  //     let message = err.response.data.error
+  //       ? err.response.data.error.message
+  //       : "An unexpected error occurred";
+  //     throw Array.isArray(message) ? message : [message];
+  //   }
+  // }
+
   static async request(endpoint, data = {}, method = "get") {
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${HomeAutomationApi.token}` };
@@ -17,12 +37,17 @@ class HomeAutomationApi {
     } catch (err) {
       console.error("API Error:", err.response);
       if (!err.response) {
-        throw ["Network error or server is unreachable"];
+        throw new Error("Network error or server is unreachable");
       }
+      // If the server responds with a structured error object, throw it to be caught by the form handling logic
+      if (err.response.data && err.response.data.errors) {
+        throw err.response.data.errors;
+      }
+      // Default to a more generic error if specific ones aren't provided
       let message = err.response.data.error
         ? err.response.data.error.message
         : "An unexpected error occurred";
-      throw Array.isArray(message) ? message : [message];
+      throw new Error(Array.isArray(message) ? message.join(", ") : message);
     }
   }
 

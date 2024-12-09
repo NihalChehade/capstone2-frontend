@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import UserContext from "./UserContext";
 import { jwtDecode } from "jwt-decode";
-
 import HomeAutomationApi from "./api";
 import SideBar from "./components/SideBar";
 import SignupForm from "./components/SignupForm";
@@ -10,16 +9,17 @@ import LoginForm from "./components/LoginForm";
 import Dashboard from "./components/Dashboard";
 import AddDeviceForm from "./components/AddDeviceForm";
 import UserProfile from "./components/UserProfile";
+import Instructions from "./components/Instructions";
 import Logout from "./components/Logout";
 import PrivateRoute from "./components/PrivateRoute"; // A component to handle private routes
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Instructions from "./components/Instructions";
 
 function App() {
   const [token, setToken] = useState(null); // Store token in state
   const [currentUser, setCurrentUser] = useState(null); // Store current user info in state
   const [devices, setDevices] = useState(null);
+  const [errorMessages, setErrorMessages] = useState({});
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -36,15 +36,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    async function getCurrentUser() {
+    async function fetchInitialData(storedToken) {
       if (token) {
         try {
-          const { username } = jwtDecode(token); // Decode the token to get the username
-          const user = await HomeAutomationApi.getUser(username); // Fetch user details from backend
-          setCurrentUser(user); // Set the user in state
-
+          const { username } = jwtDecode(storedToken);
+          const user = await HomeAutomationApi.getUser(username);
+          setCurrentUser(user);
           const devicesFetched = await HomeAutomationApi.getDevices();
-          setDevices(devicesFetched); // Set the devices in state
+          setDevices(devicesFetched);
         } catch (err) {
           console.error("Error loading user or invalid token", err);
           setCurrentUser(null);
@@ -53,9 +52,10 @@ function App() {
         }
       } else {
         setCurrentUser(null);
+        setDevices(null);
       }
     }
-    getCurrentUser();
+    fetchInitialData(token);
   }, [token]); // Run this effect whenever the token changes
 
   // Login function
@@ -69,12 +69,11 @@ function App() {
         return true;
       }
     } catch (err) {
-      console.error(
-        "Login failed: ",
-        err.response ? err.response.data.error : "Server error"
-      );
+      const errorDetail = err.response?.data.error || "Server error";
+      setErrorMessages(prevErrors => ({...prevErrors, login: errorDetail}));
+      console.error("Login failed: ", errorDetail);
       return false;
-    }
+    } 
   }
 
   // Signup function
@@ -90,9 +89,11 @@ function App() {
         return true;
       }
     } catch (err) {
-      console.error("Signup failed", err);
+      const errorDetail = err.response?.data.error || "Server error";
+      setErrorMessages(prevErrors => ({...prevErrors, signup: errorDetail}));
+      console.error("signup failed: ", errorDetail);
       return false;
-    }
+    } 
   }
   // Function to update user information
   async function updateUser(userData) {
@@ -104,9 +105,11 @@ function App() {
       setCurrentUser(updatedUser); // Update current user state with the response
       return true; // Return true on successful update
     } catch (err) {
-      console.error("User update failed", err);
-      return false; // Return false if there's an error
-    }
+      const errorDetail = err.response?.data.error || "Server error";
+      setErrorMessages(prevErrors => ({...prevErrors, updateUser: errorDetail}));
+      console.error("update user failed: ", errorDetail);
+      return false;
+    } 
   }
 
   // Logout function
@@ -128,48 +131,51 @@ function App() {
         return true;
       }
     } catch (err) {
-      console.error("Device add failed", err);
+      const errorDetail = err.response?.data.error || "Server error";
+      setErrorMessages(prevErrors => ({...prevErrors, addDevice: errorDetail}));
+      console.error("adding device failed: ", errorDetail);
       return false;
     }
   }
 
+  // remove a device function
+  async function removeDevice(deviceName){
+    try {
+      const res = await HomeAutomationApi.removeADevice(deviceName);
+      if (res.deleted) {
+        setDevices((devices) =>
+          devices.filter((device) => device.name !== deviceName)
+        );
+        return true;
+      }
+    } catch (err) {
+      const errorDetail = err.response?.data.error || "Server error";
+      setErrorMessages(prevErrors => ({...prevErrors, removeDevice: errorDetail}));
+      console.error("Device removal failed: ", errorDetail);
+      return false;
+    } 
+  }
 
-    // remove a device function
-async function removeDevice(deviceName) {
-  try {
-    const res = await HomeAutomationApi.removeADevice(deviceName);
-    if (res.deleted) {
-      setDevices(devices => devices.filter(device => device.name !== deviceName));
-      return true;
+  const controlLight = async (deviceName, action) => {
+    try {
+      const message = await HomeAutomationApi.controlALight(deviceName, action);
+      return message;
+    } catch (err) {
+      console.error("Error controlling light:", err);
+      throw err;
+    } 
+  };
+
+  const controlLights = async (action) => {
+    try {
+      const message = await HomeAutomationApi.controlLights(action);
+      return message;
+    } catch (err) {
+      console.error("Error controlling multiple lights:", err);
+      throw err;
     }
-  } catch (err) {
-    console.error("Device removal failed", err);
-    return false;
-  }
-}
-
-const controlLight = async (deviceName, action) => {
-  try {
-    const message = await HomeAutomationApi.controlALight(deviceName, action);
-    return message;
-  } catch (err) {
-    console.error("Error controlling light:", err);
-    throw err;
-  }
-};
-
-const controlLights = async (action) => {
-  try {
-    const message = await HomeAutomationApi.controlLights(action);
-    return message;
-  } catch (err) {
-    console.error("Error controlling multiple lights:", err);
-    throw err;
-  }
-};
-
-
-
+  };
+  
   return (
     <UserContext.Provider
       value={{
@@ -184,7 +190,8 @@ const controlLights = async (action) => {
         updateUser,
         removeDevice,
         controlLight,
-        controlLights
+        controlLights,
+        errorMessages
       }}
     >
       <SideBar />

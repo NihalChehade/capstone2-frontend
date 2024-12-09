@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button, Alert, Spinner  } from "reactstrap";
 import UserContext from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import "./SignupForm.css"
 
 const SignupForm = () => {
-  const { signup } = useContext(UserContext);
+  const { signup, errorMessages } = useContext(UserContext);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -16,8 +16,8 @@ const SignupForm = () => {
   });
   
   const navigate = useNavigate();
-
-  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -31,11 +31,14 @@ const SignupForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start spinner
     const success = await signup(formData);
+    setLoading(false); // Stop spinner
     if (success) {
       navigate("/"); // Redirect after successful signup
     } else {
-      setError("Signup failed... Please check your inputs and try again.");
+      // Using the error message from App's state
+      setFormError(errorMessages.signup || "Signup failed. Please check your inputs and try again.");
     }
   };
 
@@ -43,8 +46,14 @@ const SignupForm = () => {
     <div className="Signup">
       <h2>Signup Form</h2>
       
+      {loading && (
+        <div className="text-center">
+          <Spinner color="primary" />
+        </div>
+      )} {/* Display spinner when loading is true */}
+
       {/* Display error message if there's an error */}
-      {error && <Alert color="danger">{error}</Alert>}
+      {formError && <Alert color="danger">{formError}</Alert>}
 
       <Form onSubmit={handleSubmit}>
         <FormGroup>
@@ -125,7 +134,7 @@ const SignupForm = () => {
           />
         </FormGroup>
 
-        <Button type="submit" size="lg" color="primary" block>
+        <Button type="submit" size="lg" color="primary" block disabled={loading}>
           Signup
         </Button>
       </Form>

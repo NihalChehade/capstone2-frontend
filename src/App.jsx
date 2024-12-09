@@ -121,22 +121,25 @@ function App() {
     localStorage.removeItem("token");
   }
 
-  // add a new device function
-  async function addDevice(deviceData) {
-    try {
-      // Get device data after adding the device
-      const newDevice = await HomeAutomationApi.addADevice(deviceData);
-      if (newDevice) {
-        setDevices((devices) => [...devices, newDevice]);
-        return true;
-      }
-    } catch (err) {
-      const errorDetail = err.response?.data.error || "Server error";
-      setErrorMessages(prevErrors => ({...prevErrors, addDevice: errorDetail}));
-      console.error("adding device failed: ", errorDetail);
-      return false;
+  // Function to add a new device
+async function addDevice(deviceData) {
+  try {
+    const newDevice = await HomeAutomationApi.addADevice(deviceData);
+    if (newDevice) {
+      setDevices((devices) => [...devices, newDevice]);
+      return true;
+    } else {
+      throw new Error("Failed to add device. Please try again.");
     }
+  } catch (err) {
+    // Capture any structured error message from the API and propagate it
+    const errorDetail = err.message || "Adding device failed due to server error.";
+    setErrorMessages(prevErrors => ({...prevErrors, addDevice: errorDetail}));
+    console.error("Adding device failed: ", errorDetail);
+    throw new Error(errorDetail); // Throw an error to be caught by the form
   }
+}
+
 
   // remove a device function
   async function removeDevice(deviceName){
@@ -175,7 +178,7 @@ function App() {
       throw err;
     }
   };
-  
+
   return (
     <UserContext.Provider
       value={{

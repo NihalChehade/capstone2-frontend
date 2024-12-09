@@ -32,16 +32,15 @@ const AddDeviceForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start spinner
-    const success = await addDevice(formData);
-    setLoading(false); // Stop spinner
-    if (success) {
-      navigate("/"); // Redirect after successful device addition
-    } else {
-      // Using the error message from App's state
-      setFormError(
-        errorMessages.addDevice ||
-          "Device adding failed... Please check your inputs and try again!"
-      );
+    try {
+      const success = await addDevice(formData);
+      if (success) {
+        navigate("/"); // Redirect after successful device addition
+      }
+    } catch (error) {
+      setFormError(error.message); // Use error message from the catch block of the API request
+    } finally {
+      setLoading(false); // Stop spinner regardless of the outcome
     }
   };
 

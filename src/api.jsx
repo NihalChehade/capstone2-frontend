@@ -39,15 +39,12 @@ class HomeAutomationApi {
       if (!err.response) {
         throw new Error("Network error or server is unreachable");
       }
-      // If the server responds with a structured error object, throw it to be caught by the form handling logic
-      if (err.response.data && err.response.data.errors) {
-        throw err.response.data.errors;
-      }
-      // Default to a more generic error if specific ones aren't provided
-      let message = err.response.data.error
-        ? err.response.data.error.message
-        : "An unexpected error occurred";
-      throw new Error(Array.isArray(message) ? message.join(", ") : message);
+      // If the server responds with a structured error array, throw it to be caught by the form handling logic
+      throw new Error(
+        err.response.data.errors ||
+          err.response.data.error ||
+          "An unexpected error occurred"
+      );
     }
   }
 

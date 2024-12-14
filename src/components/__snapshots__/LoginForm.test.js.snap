@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginForm renders without crashing and matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="Login"
+  >
+    <h1>
+      Log In
+    </h1>
+     
+    <form
+      class=""
+    >
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="username"
+        >
+          Username
+        </label>
+        <input
+          class="form-control"
+          id="username"
+          name="username"
+          required=""
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="password"
+        >
+          Password
+        </label>
+        <input
+          class="form-control"
+          id="password"
+          name="password"
+          required=""
+          type="password"
+          value=""
+        />
+      </div>
+      <button
+        class="btn btn-primary d-block w-100"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</DocumentFragment>
+`;

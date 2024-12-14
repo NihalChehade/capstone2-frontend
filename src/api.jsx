@@ -1,134 +1,73 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3001";
 
 class HomeAutomationApi {
-  // the token for interactive with the API will be stored here.
   static token;
 
-  // static async request(endpoint, data = {}, method = "get") {
-  //   const url = `${BASE_URL}/${endpoint}`;
-  //   const headers = { Authorization: `Bearer ${HomeAutomationApi.token}` };
-  //   const params = method === "get" ? data : {};
-
-  //   try {
-  //     const response = await axios({ url, method, data, params, headers });
-  //     return response.data;
-  //   } catch (err) {
-  //     console.error("API Error:", err.response);
-  //     if (!err.response) {
-  //       throw ["Network error or server is unreachable"];
-  //     }
-  //     let message = err.response.data.error
-  //       ? err.response.data.error.message
-  //       : "An unexpected error occurred";
-  //     throw Array.isArray(message) ? message : [message];
-  //   }
-  // }
-
+  // General request function to handle all API calls
   static async request(endpoint, data = {}, method = "get") {
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${HomeAutomationApi.token}` };
+    const headers = {
+      Authorization: `Bearer ${HomeAutomationApi.token}`,
+      'Content-Type': 'application/json',
+    };
     const params = method === "get" ? data : {};
 
     try {
       const response = await axios({ url, method, data, params, headers });
       return response.data;
     } catch (err) {
-      console.error("API Error:", err.response);
-      if (!err.response) {
-        throw new Error("Network error or server is unreachable");
+      // Check if the server responded with errors and reformat if necessary
+      if (err.response && err.response.data.error && err.response.data.error.errors) {
+        const errors = {};
+        err.response.data.error.errors.forEach(error => {
+          // Assume error has a field and message structure
+          errors[error.field] = error.message;
+        });
+        throw errors;
+      } else {
+        // General error message if no structured errors are provided
+        throw { general: err.response ? err.response.data.error.message || "Something went wrong" : "Network error" };
       }
-      // Handle the array of errors and join them into a single message string if needed
-      let messages = err.response.data.error?.message || [
-        "An unexpected error occurred",
-      ];
-      throw new Error(messages.join(", "));
     }
   }
 
-  // Individual API routes
-
-  /** signup a new user : { username, password, firstName, lastName, email, lifxToken } => token  */
-  static async signup({
-    username,
-    password,
-    firstName,
-    lastName,
-    email,
-    lifxToken,
-  }) {
-    let res = await this.request(
-      "auth/register",
-      { username, password, firstName, lastName, email, lifxToken },
-      "post"
-    );
-    return res.token;
-  }
-  /** login a user : { username, password} => token  */
-  static async login({ username, password }) {
-    let res = await this.request(`auth/token`, { username, password }, "post");
-    return res.token;
+  // API methods
+  static async signup(userData) {
+    return await this.request('auth/register', userData, 'post');
   }
 
-  // /** Logout a user */
-  // static async logout() {
-  //   try {
-  //     // Call the logout endpoint
-  //     const response = await this.request(`auth/logout`, {}, "post");
-  //     return response.data;
-  //   } catch (err) {
-  //     console.error("Logout Failed:", err);
-  //     throw err;
-  //   }
-  // }
+  static async login(credentials) {
+    return await this.request('auth/token', credentials, 'post');
+  }
 
-  /** Get a user by username : username => user  */
   static async getUser(username) {
-    let res = await this.request(`users/${username}`);
-    return res.user;
-  }
-  /** Patch a user by username : {userData} => UpdatedUser  */
-  static async updateProfile(username, userData) {
-    let res = await this.request(`users/${username}`, userData, "patch");
-    return res.user;
+    return await this.request(`users/${username}`);
   }
 
-  /** Get devices for loggedin user. */
+  static async updateProfile(username, userData) {
+    return await this.request(`users/${username}`, userData, 'patch');
+  }
 
   static async getDevices() {
-    let res = await this.request(`devices`);
-    if (res) {
-      return res.devices;
-    }
+    return await this.request('devices');
   }
 
-  static async addADevice({ name, serial_number, type, room, status }) {
-    let res = await this.request(
-      `devices/`,
-      { name, serial_number, type, room, status },
-      "post"
-    );
-    return res.device;
+  static async addADevice(deviceData) {
+    return await this.request('devices', deviceData, 'post');
   }
 
   static async removeADevice(deviceName) {
-    let res = await this.request(`devices/${deviceName}`, {}, "delete");
-    return res;
+    return await this.request(`devices/${deviceName}`, {}, 'delete');
   }
 
   static async controlALight(deviceName, action) {
-    let res = await this.request(
-      `devices/lights/${deviceName}`,
-      action,
-      "patch"
-    );
-    return res.message;
+    return await this.request(`devices/lights/${deviceName}`, action, 'patch');
   }
 
   static async controlLights(action) {
-    let res = await this.request(`devices/lights`, action, "patch");
-    return res.message;
+    return await this.request('devices/lights', action, 'patch');
   }
 }
 

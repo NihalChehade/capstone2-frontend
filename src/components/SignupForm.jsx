@@ -1,22 +1,22 @@
 import React, { useState, useContext } from "react";
-import { Form, FormGroup, Label, Input, Button, Alert, Spinner  } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button, Spinner, FormFeedback, Alert } from "reactstrap";
 import UserContext from "../UserContext";
 import { useNavigate } from "react-router-dom";
-import "./SignupForm.css"
+import "./SignupForm.css";
 
 const SignupForm = () => {
-  const { signup, errorMessages } = useContext(UserContext);
+  const { signup } = useContext(UserContext);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     firstName: "",
     lastName: "",
     email: "",
-    lifxToken: ""  
+    lifxToken: "",
   });
-  
+
   const navigate = useNavigate();
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] = useState({});
   const [loading, setLoading] = useState(false);
 
   // Handle input changes
@@ -24,38 +24,47 @@ const SignupForm = () => {
     const { name, value } = e.target;
     setFormData((data) => ({
       ...data,
-      [name]: value
+      [name]: value,
     }));
+
+    // Clear the specific field error when user changes the input
+    if (formError[name]) {
+      const newError = { ...formError };
+      delete newError[name];
+      setFormError(newError);
+    }
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start spinner
-    const success = await signup(formData);
-    setLoading(false); // Stop spinner
-    if (success) {
-      navigate("/"); // Redirect after successful signup
-    } else {
-      // Using the error message from App's state
-      setFormError(errorMessages.signup || "Signup failed. Please check your inputs and try again.");
+
+    try {
+      const success = await signup(formData);
+      if (success) {
+        navigate("/"); // Redirect after successful signup
+      }
+    } catch (error) {
+      setFormError(error); // Capture errors (general or field-specific)
+    } finally {
+      setLoading(false); // Stop spinner
     }
   };
 
   return (
     <div className="Signup">
       <h2>Signup Form</h2>
-      
+
       {loading && (
         <div className="text-center">
           <Spinner color="primary" />
         </div>
-      )} {/* Display spinner when loading is true */}
+      )}
 
-      {/* Display error message if there's an error */}
-      {formError && <Alert color="danger">{formError}</Alert>}
+      {formError.general && <Alert color="danger" >{formError.general}</Alert>}
 
-      <Form onSubmit={handleSubmit}>
+      <Form role="form" onSubmit={handleSubmit}>
         <FormGroup>
           <Label for="username">Username</Label>
           <Input
@@ -65,8 +74,10 @@ const SignupForm = () => {
             id="username"
             value={formData.username}
             onChange={handleChange}
+            invalid={!!formError.username}
             required
           />
+          <FormFeedback>{formError.username}</FormFeedback>
         </FormGroup>
 
         <FormGroup>
@@ -78,8 +89,10 @@ const SignupForm = () => {
             id="password"
             value={formData.password}
             onChange={handleChange}
+            invalid={!!formError.password}
             required
           />
+          <FormFeedback>{formError.password}</FormFeedback>
         </FormGroup>
 
         <FormGroup>
@@ -91,8 +104,10 @@ const SignupForm = () => {
             id="firstName"
             value={formData.firstName}
             onChange={handleChange}
+            invalid={!!formError.firstName}
             required
           />
+          <FormFeedback>{formError.firstName}</FormFeedback>
         </FormGroup>
 
         <FormGroup>
@@ -104,8 +119,10 @@ const SignupForm = () => {
             id="lastName"
             value={formData.lastName}
             onChange={handleChange}
+            invalid={!!formError.lastName}
             required
           />
+          <FormFeedback>{formError.lastName}</FormFeedback>
         </FormGroup>
 
         <FormGroup>
@@ -117,8 +134,10 @@ const SignupForm = () => {
             id="email"
             value={formData.email}
             onChange={handleChange}
+            invalid={!!formError.email}
             required
           />
+          <FormFeedback>{formError.email}</FormFeedback>
         </FormGroup>
 
         <FormGroup>
@@ -130,8 +149,10 @@ const SignupForm = () => {
             id="lifxToken"
             value={formData.lifxToken}
             onChange={handleChange}
+            invalid={!!formError.lifxToken}
             required
           />
+          <FormFeedback>{formError.lifxToken}</FormFeedback>
         </FormGroup>
 
         <Button type="submit" size="lg" color="primary" block disabled={loading}>

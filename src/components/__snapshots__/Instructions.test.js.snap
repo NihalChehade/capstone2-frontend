@@ -1,0 +1,154 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Instructions renders correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="container"
+  >
+    <div
+      class="mt-4 row"
+    >
+      <div
+        class="col"
+      >
+        <div
+          class="card"
+        >
+          <div
+            class="card-body"
+          >
+            <h1
+              class="card-title"
+            >
+              Welcome to Your Smart Light Dashboard
+            </h1>
+            <p
+              class="card-text"
+            >
+              This platform allows you to control your LIFX lights from anywhere, enabling you to adjust the brightness, change colors, and switch your lights on or off with ease. Enhance your home lighting experience with intuitive controls designed for simplicity and convenience.
+            </p>
+            <h3
+              class="card-title"
+            >
+              Important Initial Step
+            </h3>
+            <p
+              class="card-text"
+            >
+              <strong>
+                Before signing up on our dashboard, you must first create an account on the LIFX mobile application.
+              </strong>
+            </p>
+            <p
+              class="card-text"
+            >
+              Follow these steps to integrate your lights with our service:
+            </p>
+            <ol>
+              <li>
+                <strong>
+                  Create LIFX Account:
+                </strong>
+                 Download the LIFX app from the App Store or Google Play and sign up.
+              </li>
+              <li>
+                <strong>
+                  Obtain LIFX Token:
+                </strong>
+                 In the LIFX app, follow the instructions to generate a token for API access.
+              </li>
+              <li>
+                <strong>
+                  Sign Up on Our Dashboard:
+                </strong>
+                 Armed with your LIFX token, proceed to sign up on our platform.
+              </li>
+            </ol>
+            <h3
+              class="card-title"
+            >
+              Adding Your LIFX Lights
+            </h3>
+            <p
+              class="card-text"
+            >
+              Once you have your LIFX account and token:
+            </p>
+            <ol
+              start="4"
+            >
+              <li>
+                <strong>
+                  Register Your Lights:
+                </strong>
+                 Follow the app instructions to connect your lights to your Wi-Fi network and register them with your LIFX account.
+              </li>
+              <li>
+                <strong>
+                  Ensure Cloud Connectivity:
+                </strong>
+                 Confirm that your lights are connected to the cloud and controllable via the LIFX app.
+              </li>
+              <li>
+                <strong>
+                  Add Lights to Dashboard:
+                </strong>
+                 Navigate to the "Add Device" section in our dashboard and enter the required information for each light.
+              </li>
+            </ol>
+            <h3
+              class="card-title"
+            >
+              Using the Dashboard
+            </h3>
+            <p
+              class="card-text"
+            >
+              Learn how to interact with your lights through the dashboard:
+            </p>
+            <ul>
+              <li>
+                <strong>
+                  Home Overview:
+                </strong>
+                 View all connected lights and their current status.
+              </li>
+              <li>
+                <strong>
+                  Light Control:
+                </strong>
+                <ul>
+                  <li>
+                    <strong>
+                      Power:
+                    </strong>
+                     Click the power icon next to each light to turn it on or off.
+                  </li>
+                  <li>
+                    <strong>
+                      Brightness:
+                    </strong>
+                     Adjust the brightness slider to increase or decrease light intensity.
+                  </li>
+                  <li>
+                    <strong>
+                      Color:
+                    </strong>
+                     Click on the color preview next to each light to open a color picker and select a new color.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <button
+              class="btn btn-primary"
+              type="button"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

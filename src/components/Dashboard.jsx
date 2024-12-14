@@ -8,26 +8,24 @@ import "./Dashboard.css";
 function Dashboard() {
   const { currentUser, devices } = useContext(UserContext);
   const navigate = useNavigate();
-
+ 
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
     if (hour < 18) return "Good Afternoon";
     return "Good Evening";
   };
-
   const hasDevices = devices?.length > 0;
-
   // Functions to handle navigation
   const handleNavigate = (path) => {
     navigate(path);
   };
 
   return (
-    <Container className="text-center mt-5 Dashboard">
-      <Row className="align-items-center my-5">
+    <Container className="text-center Dashboard">
+      <Row className="align-items-center my-3">
         <Col>
-          <h1 className="display-3 text-white">
+          <h1 className="display-2 ">
             {getGreeting()}, {currentUser ? currentUser.username : "Guest"}!
           </h1>
         </Col>

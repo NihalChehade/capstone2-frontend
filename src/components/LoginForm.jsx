@@ -22,20 +22,27 @@ const LoginForm = () => {
       ...data,
       [name]: value
     }));
+    // Clear the specific field error when user changes the input
+    if (formError[name]) {
+      setFormError({ ...formError, [name]: undefined });
+    }
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start spinner
-    const success = await login(formData);
-    setLoading(false); // Stop spinner
-    if (success) {
-      navigate("/"); // Redirect after successful login
-    } else {
-      // Using the error message from App's state
-      setFormError(errorMessages.login || "Login failed. Please try again.");
+    try{
+      const success = await login(formData);
+      if (success) {
+        navigate("/"); // Redirect after successful login
+      }
+    } catch(error){
+      setFormError(error);
+    } finally{
+      setLoading(false);
     }
+     
   };
 
   if(currentUser){
@@ -53,9 +60,9 @@ const LoginForm = () => {
       )} {/* Display spinner when loading is true */}
 
       {/* Display error message if there's an error */}
-       {formError && <Alert color="danger">{formError}</Alert>}
+       {formError.general && <Alert color="danger" >{formError.general}</Alert>}
 
-      <Form onSubmit={handleSubmit}>
+      <Form  onSubmit={handleSubmit}>
         <FormGroup>
           <Label for="username">Username</Label>
           <Input

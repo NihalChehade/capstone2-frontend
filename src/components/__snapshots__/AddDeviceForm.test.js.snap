@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddDeviceForm renders without crashing and matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="AddDeviceForm"
+  >
+    <h2>
+      Add Device Form
+    </h2>
+    <form
+      class=""
+    >
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="name"
+        >
+          Name
+        </label>
+        <input
+          aria-invalid="false"
+          class="form-control-lg form-control"
+          id="name"
+          name="name"
+          required=""
+          type="text"
+          value=""
+        />
+        <div
+          class="invalid-feedback"
+        />
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="serial_number"
+        >
+          Serial Number
+        </label>
+        <input
+          aria-invalid="false"
+          class="form-control-lg form-control"
+          id="serial_number"
+          name="serial_number"
+          required=""
+          type="text"
+          value=""
+        />
+        <div
+          class="invalid-feedback"
+        />
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="type"
+        >
+          Type
+        </label>
+        <input
+          aria-invalid="false"
+          class="form-control-lg form-control"
+          id="type"
+          name="type"
+          required=""
+          type="text"
+          value=""
+        />
+        <div
+          class="invalid-feedback"
+        />
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="room"
+        >
+          Room
+        </label>
+        <input
+          aria-invalid="false"
+          class="form-control-lg form-control"
+          id="room"
+          name="room"
+          required=""
+          type="text"
+          value=""
+        />
+        <div
+          class="invalid-feedback"
+        />
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="status"
+        >
+          Status
+        </label>
+        <input
+          aria-invalid="false"
+          class="form-control-lg form-control"
+          id="status"
+          name="status"
+          required=""
+          type="text"
+          value=""
+        />
+        <div
+          class="invalid-feedback"
+        />
+      </div>
+      <button
+        class="btn btn-primary btn-lg d-block w-100"
+        type="submit"
+      >
+        ADD
+      </button>
+    </form>
+  </div>
+</DocumentFragment>
+`;

@@ -1,4 +1,3 @@
-
 import React, { useState, useContext, useCallback } from "react";
 import { Card, CardBody, CardTitle, CardText, Button, Input } from "reactstrap";
 import { ChromePicker } from "react-color";
@@ -59,7 +58,7 @@ const LightDevice = ({ device }) => {
             onClick={handleDelete}
             className="float-right text-danger"
           >
-            <FontAwesomeIcon icon={faTrashAlt} />
+            <FontAwesomeIcon icon={faTrashAlt} aria-label="delete" />
           </Button>
         </CardTitle>
         <CardText>
@@ -74,6 +73,7 @@ const LightDevice = ({ device }) => {
               icon={faPowerOff}
               size="2xl"
               style={{ color: action.status === "on" ? "#2d2af4" : "#878787" }}
+              aria-label="power-off"
             />
           </Button>
         </CardText>
@@ -85,6 +85,7 @@ const LightDevice = ({ device }) => {
             min="0"
             max="100"
             value={action.brightness}
+            aria-label="brightness"
             onChange={(e) => handleChange("brightness", e.target.value)}
           />
           {action.brightness}%

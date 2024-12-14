@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SideBar renders without crashing for guest users 1`] = `
+<DocumentFragment>
+  <nav
+    class="navbar navbar navbar-expand-md"
+  >
+    <div
+      class="container-fluid"
+    >
+      <a
+        class="navbar-brand"
+        href="/"
+      >
+        Home Automation
+      </a>
+      <button
+        aria-label="Toggle navigation"
+        class="navbar-toggler"
+        type="button"
+      >
+        <span
+          class="navbar-toggler-icon"
+        />
+      </button>
+      <div
+        class="collapse navbar-collapse"
+      >
+        <ul
+          class="mr-auto navbar-nav"
+        >
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/"
+            >
+               Dashboard
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/instructions"
+            >
+              Instructions
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/signup"
+            >
+              Signup
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/login"
+            >
+              Login
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</DocumentFragment>
+`;
+
+exports[`SideBar renders without crashing for logged-in users 1`] = `
+<DocumentFragment>
+  <nav
+    class="navbar navbar navbar-expand-md"
+  >
+    <div
+      class="container-fluid"
+    >
+      <a
+        class="navbar-brand"
+        href="/"
+      >
+        Home Automation
+      </a>
+      <button
+        aria-label="Toggle navigation"
+        class="navbar-toggler"
+        type="button"
+      >
+        <span
+          class="navbar-toggler-icon"
+        />
+      </button>
+      <div
+        class="collapse navbar-collapse"
+      >
+        <ul
+          class="mr-auto navbar-nav"
+        >
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/"
+            >
+              My Dashboard
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/instructions"
+            >
+              Instructions
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/devices/add"
+            >
+              Add Device
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/profile"
+            >
+              Profile
+            </a>
+          </li>
+          <li
+            class="nav-item nav-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/logout"
+            >
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</DocumentFragment>
+`;

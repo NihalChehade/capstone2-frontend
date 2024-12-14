@@ -1,5 +1,5 @@
 .LightDevice {
-    background:transparent !important;
     margin: 5%;
-    color:white;
+    color:white !important;
+    background: rgba(85, 62, 62, 0.6) !important; /* Light gray with 50% opacity */
 }

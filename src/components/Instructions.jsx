@@ -40,6 +40,7 @@ const Instructions = () => {
               </CardText>
               <CardText>
                 Follow these steps to integrate your lights with our service:
+                </CardText>
                 <ol>
                   <li>
                     <strong>Create LIFX Account:</strong> Download the LIFX app from the App Store or Google Play and sign up.
@@ -51,10 +52,11 @@ const Instructions = () => {
                     <strong>Sign Up on Our Dashboard:</strong> Armed with your LIFX token, proceed to sign up on our platform.
                   </li>
                 </ol>
-              </CardText>
+              
               <CardTitle tag="h3">Adding Your LIFX Lights</CardTitle>
               <CardText>
                 Once you have your LIFX account and token:
+                </CardText>
                 <ol start="4">
                   <li>
                     <strong>Register Your Lights:</strong> Follow the app instructions to connect your lights to your Wi-Fi network and register them with your LIFX account.
@@ -66,10 +68,11 @@ const Instructions = () => {
                     <strong>Add Lights to Dashboard:</strong> Navigate to the "Add Device" section in our dashboard and enter the required information for each light.
                   </li>
                 </ol>
-              </CardText>
+              
               <CardTitle tag="h3">Using the Dashboard</CardTitle>
               <CardText>
                 Learn how to interact with your lights through the dashboard:
+                </CardText>
                 <ul>
                   <li>
                     <strong>Home Overview:</strong> View all connected lights and their current status.
@@ -89,7 +92,7 @@ const Instructions = () => {
                     </ul>
                   </li>
                 </ul>
-              </CardText>
+              
 
               <Button color="primary" onClick={handleNavigate}>
                 Go to Dashboard

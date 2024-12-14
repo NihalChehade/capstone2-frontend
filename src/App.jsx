@@ -18,8 +18,7 @@ import "./App.css";
 function App() {
   const [token, setToken] = useState(null); // Store token in state
   const [currentUser, setCurrentUser] = useState(null); // Store current user info in state
-  const [devices, setDevices] = useState(null);
-  const [errorMessages, setErrorMessages] = useState({});
+  const [devices, setDevices] = useState([]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -40,10 +39,10 @@ function App() {
       if (token) {
         try {
           const { username } = jwtDecode(storedToken);
-          const user = await HomeAutomationApi.getUser(username);
-          setCurrentUser(user);
-          const devicesFetched = await HomeAutomationApi.getDevices();
-          setDevices(devicesFetched);
+          const userResp = await HomeAutomationApi.getUser(username);
+          setCurrentUser(userResp.user);
+          const devicesResp = await HomeAutomationApi.getDevices();
+          setDevices(devicesResp.devices);
         } catch (err) {
           console.error("Error loading user or invalid token", err);
           setCurrentUser(null);
@@ -52,7 +51,7 @@ function App() {
         }
       } else {
         setCurrentUser(null);
-        setDevices(null);
+        setDevices([]);
       }
     }
     fetchInitialData(token);
@@ -61,55 +60,46 @@ function App() {
   // Login function
   async function login(credentials) {
     try {
-      const token = await HomeAutomationApi.login(credentials);
-      if (token) {
-        setToken(token);
-        HomeAutomationApi.token = token;
-        localStorage.setItem("token", token);
+      const resp = await HomeAutomationApi.login(credentials);
+      if (resp.token) {
+        setToken(resp.token);
+        HomeAutomationApi.token = resp.token;
+        localStorage.setItem("token", resp.token);
         return true;
       }
     } catch (err) {
-      const errorDetail = err.response?.data.error || "Server error";
-      setErrorMessages(prevErrors => ({...prevErrors, login: errorDetail}));
-      console.error("Login failed: ", errorDetail);
-      return false;
-    } 
+      throw err;
+    }
   }
 
   // Signup function
   async function signup(userData) {
     try {
       // Get token from backend after signup
-      const token = await HomeAutomationApi.signup(userData);
-      if (token) {
-        setToken(token);
-        HomeAutomationApi.token = token;
+      const resp = await HomeAutomationApi.signup(userData);
+      if (resp.token) {
+        setToken(resp.token);
+        HomeAutomationApi.token = resp.token;
         // store the token in localStorage
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", resp.token);
         return true;
       }
     } catch (err) {
-      const errorDetail = err.response?.data.error || "Server error";
-      setErrorMessages(prevErrors => ({...prevErrors, signup: errorDetail}));
-      console.error("signup failed: ", errorDetail);
-      return false;
-    } 
+      throw err;
+    }
   }
   // Function to update user information
   async function updateUser(userData) {
     try {
-      const updatedUser = await HomeAutomationApi.updateProfile(
+      const resp = await HomeAutomationApi.updateProfile(
         currentUser.username,
         userData
       );
-      setCurrentUser(updatedUser); // Update current user state with the response
+      setCurrentUser(resp.user); // Update current user state with the response
       return true; // Return true on successful update
     } catch (err) {
-      const errorDetail = err.response?.data.error || "Server error";
-      setErrorMessages(prevErrors => ({...prevErrors, updateUser: errorDetail}));
-      console.error("update user failed: ", errorDetail);
-      return false;
-    } 
+      throw err;
+    }
   }
 
   // Logout function
@@ -122,27 +112,22 @@ function App() {
   }
 
   // Function to add a new device
-async function addDevice(deviceData) {
-  try {
-    const newDevice = await HomeAutomationApi.addADevice(deviceData);
-    if (newDevice) {
-      setDevices((devices) => [...devices, newDevice]);
-      return true;
-    } else {
-      throw new Error("Failed to add device. Please try again.");
+  async function addDevice(deviceData) {
+    try {
+      const newDevice = await HomeAutomationApi.addADevice(deviceData);
+      if (newDevice.device) {
+        setDevices((devices) => [...devices, newDevice.device]);
+        return true;
+      } else {
+        throw new Error("Failed to add device. Please try again.");
+      }
+    } catch (err) {
+      throw err;
     }
-  } catch (err) {
-    // Capture any structured error message from the API and propagate it
-    const errorDetail = err.message || "Adding device failed due to server error.";
-    setErrorMessages(prevErrors => ({...prevErrors, addDevice: errorDetail}));
-    console.error("Adding device failed: ", errorDetail);
-    throw new Error(errorDetail); // Throw an error to be caught by the form
   }
-}
-
 
   // remove a device function
-  async function removeDevice(deviceName){
+  async function removeDevice(deviceName) {
     try {
       const res = await HomeAutomationApi.removeADevice(deviceName);
       if (res.deleted) {
@@ -151,28 +136,26 @@ async function addDevice(deviceData) {
         );
         return true;
       }
-    } catch (err) {
-      const errorDetail = err.response?.data.error || "Server error";
-      setErrorMessages(prevErrors => ({...prevErrors, removeDevice: errorDetail}));
-      console.error("Device removal failed: ", errorDetail);
+    } catch (err) {      
+      console.error("Device removal failed: ", err);
       return false;
-    } 
+    }
   }
 
   const controlLight = async (deviceName, action) => {
     try {
-      const message = await HomeAutomationApi.controlALight(deviceName, action);
-      return message;
+      const resp = await HomeAutomationApi.controlALight(deviceName, action);
+      return resp.message;
     } catch (err) {
       console.error("Error controlling light:", err);
       throw err;
-    } 
+    }
   };
 
   const controlLights = async (action) => {
     try {
-      const message = await HomeAutomationApi.controlLights(action);
-      return message;
+      const resp = await HomeAutomationApi.controlLights(action);
+      return resp.message;
     } catch (err) {
       console.error("Error controlling multiple lights:", err);
       throw err;
@@ -194,7 +177,6 @@ async function addDevice(deviceData) {
         removeDevice,
         controlLight,
         controlLights,
-        errorMessages
       }}
     >
       <SideBar />

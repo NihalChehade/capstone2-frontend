@@ -7,14 +7,14 @@ import {
   Button,
   Alert,
   Spinner,
+  FormFeedback,
 } from "reactstrap";
 import UserContext from "../UserContext";
 import { Navigate } from "react-router-dom";
 import "./UserProfile.css";
 
 const UserProfile = () => {
-  const { currentUser, setCurrentUser, updateUser, errorMessages } =
-    useContext(UserContext); // Get current user and the function to update it
+  const { currentUser, updateUser } = useContext(UserContext);
   if (!currentUser) {
     return <Navigate to="/" />;
   }
@@ -23,38 +23,43 @@ const UserProfile = () => {
     firstName: currentUser.firstName || "",
     lastName: currentUser.lastName || "",
     email: currentUser.email || "",
-    lifxToken: currentUser.lifxToken || "", // Initialize lifxToken
+    lifxToken: currentUser.lifxToken || "",
   });
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] = useState({});
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((data) => ({
       ...data,
       [name]: value,
     }));
+
+    // Clear the specific field error when user changes the input
+    if (formError[name]) {
+      const newError = { ...formError };
+      delete newError[name];
+      setFormError(newError);
+    }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault();
     setLoading(true);
+    setSuccess(false);
+
     try {
-      const updatedUser = await updateUser(formData); // Call the updateUser context function with form data
-      if (updatedUser) {
-        setCurrentUser(updatedUser); // Update currentUser in context with the updated user details
-        setSuccess(true); // Set success state to true to display success message
-        setFormError(""); // Ensure no error is shown on successful update
-      } else {
-        throw new Error("Update failed due to server error"); // Create an error if update returns false
+      const isUpdated = await updateUser(formData);
+      if (isUpdated) {
+        setSuccess(true); // Indicate successful update
+        setFormError({}); // Clear any errors
       }
     } catch (err) {
-      setSuccess(false); // Set success to false on catch
-      setFormError(
-        errorMessages.updateUser || err.message || "Failed to update profile."
-      ); // Set error message to display
+      setFormError(err); // Capture structured errors or general error
     } finally {
       setLoading(false);
     }
@@ -68,12 +73,12 @@ const UserProfile = () => {
         <div className="text-center">
           <Spinner color="primary" />
         </div>
-      )}{/* Display spinner when loading is true */}
+      )}
 
       {success && <Alert color="success">Profile updated successfully!</Alert>}
-      
-      {formError && <Alert color="danger">{formError}</Alert>}
-      
+
+      {formError.general && <Alert color="danger">{formError.general}</Alert>}
+
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label for="username">Username</Label>
@@ -83,9 +88,10 @@ const UserProfile = () => {
             id="username"
             name="username"
             value={currentUser.username}
-            disabled // Username should not be editable
+            disabled
           />
         </FormGroup>
+
         <FormGroup>
           <Label for="firstName">First Name</Label>
           <Input
@@ -95,8 +101,11 @@ const UserProfile = () => {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
+            invalid={!!formError.firstName}
           />
+          <FormFeedback>{formError.firstName}</FormFeedback>
         </FormGroup>
+
         <FormGroup>
           <Label for="lastName">Last Name</Label>
           <Input
@@ -106,8 +115,11 @@ const UserProfile = () => {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
+            invalid={!!formError.lastName}
           />
+          <FormFeedback>{formError.lastName}</FormFeedback>
         </FormGroup>
+
         <FormGroup>
           <Label for="email">Email</Label>
           <Input
@@ -117,8 +129,11 @@ const UserProfile = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            invalid={!!formError.email}
           />
+          <FormFeedback>{formError.email}</FormFeedback>
         </FormGroup>
+
         <FormGroup>
           <Label for="lifxToken">LIFX Token</Label>
           <Input
@@ -129,15 +144,12 @@ const UserProfile = () => {
             value={formData.lifxToken}
             onChange={handleChange}
             placeholder="Enter your LIFX API Token"
+            invalid={!!formError.lifxToken}
           />
+          <FormFeedback>{formError.lifxToken}</FormFeedback>
         </FormGroup>
-        <Button
-          type="submit"
-          size="lg"
-          color="primary"
-          block
-          disabled={loading}
-        >
+
+        <Button type="submit" size="lg" color="primary" block disabled={loading}>
           Save Changes
         </Button>
       </Form>
